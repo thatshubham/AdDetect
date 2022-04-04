@@ -1,0 +1,28 @@
+[
+    {
+        "id": 2,
+        "priority": 2,
+        "condition": {
+            "urlFilter": "duckduckgo.com/*",
+            "resourceTypes": [
+                "main_frame",
+                "xmlhttprequest"
+            ]
+        },
+        "action": {
+            "type": "redirect",
+            "redirect": {
+                "transform": {
+                    "queryTransform": {
+                        "addOrReplaceParams": [
+                            {
+                                "key": "q",
+                                "value": "in 2021"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+]

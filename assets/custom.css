@@ -1,0 +1,15 @@
+.red {
+  /* background: #e25a5a !important; */
+  background: rgb(246, 119, 73);
+  background: linear-gradient(90deg, rgba(246, 119, 73, 1) 0%, rgba(194, 49, 49, 1) 100%) !important;
+  border-radius: 5px;
+}
+
+.module--carousel-products.bing.has-grid .feedback-prompt,
+.module--carousel-autoads.bing.has-grid .feedback-prompt {
+  bottom: 0px !important;
+}
+
+.report-ad__link {
+  color: rgb(0, 0, 0) !important;
+}
