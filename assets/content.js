@@ -61,8 +61,8 @@ function redirecter() {
   fetchFunction();
 }
 
-chrome.runtime.onMessage.addListener(gotMessage); //to be used with chromium-based browsers
-// browser.runtime.onMessage.addListener(gotMessage); //to be used with firefox
+// chrome.runtime.onMessage.addListener(gotMessage); //to be used with chromium-based browsers
+browser.runtime.onMessage.addListener(gotMessage); //to be used with firefox
 
 /*message passing function - responds with the ad count*/
 function gotMessage(message, sender, sendResponse) {
