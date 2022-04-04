@@ -10,7 +10,8 @@
 - [Software Design and Implementation](#software-design-and-implementation)
   - [Basic File Structure](#basic-structure-of-the-files)
   - [Logic](#implementation-of-logic)
-  - [Problems and solutions](#problems-faced-and-resolved)
+  - [Testing](#testing)
+  - [Problems and Solutions](#problems-faced-and-resolved)
 - [Decisions and Tradeoffs](#decisions-and-tradeoffs)
   - [Manifest Version 3](#manifest-version-3)
   - [Options Page](#options-page)
@@ -77,39 +78,48 @@ adverts on [duckduckgo](https://duckduckgo.com/) and highlights them.
 
 #### Implementation of logic
 
-**Primary Task** : The primary task of the extension is to detect ads, count the ads and redirect queries.
+**Primary Task**  
+The primary task of the extension is to detect ads, count the ads and redirect queries.
 
-**Behind the scenes**: Capturing the ads is done by manipulating the DOM. On inspecting the HTML of the rendered page of duckduckgo, it becomes clear that all
+**Behind the scenes**  
+Capturing the ads is done by manipulating the DOM. On inspecting the HTML of the rendered page of duckduckgo, it becomes clear that all
 ads are nested within divs with certain classnames and ids. These are different for the `main` container and `sidebar`.
 
-**Approaching the problem**
-
-- DOM manipulation is done with `content_scripts`. Different variables are assigned to capture `nodes` that match the specific classnames. These nodes are then
+**Approaching the problem**  
+DOM manipulation is done with `content_scripts`. Different variables are assigned to capture `nodes` that match the specific classnames. These nodes are then
   iterated through and a custom classname `red` is appended to them.
-- Since the problem requires counting the number of ads, we also have dedicated variables that keep tab on the number of ads. This is done by counting the number
-  of children elements of targeted nodes.
-- The next task is redirecting queries. This is accomplished with a simple background script. The best time to do this is intercept the request before it is
-  about to be made, and before headers are available.
+
+Since the problem requires counting the number of ads, we also have dedicated variables that keep tab on the number of ads. This is done by counting the
+  number of children elements of targeted nodes.
+
+The next task is redirecting queries. This is accomplished with a simple background script. The best time to do this is intercept the request before it is about to be made, and before headers are available.
   - This is done with webRequest's `onBeforeRequest` with a listener added to it.
-  - This contains a callback function, a filter and a blocking parameter.
+  - It contains a callback `function`, a `filter` and a `blocking` parameter.
   - The callback function is where the redirection logic is present.
   - A variable `targetURL` stores the URL of the page about to be requested. Another variable `queryTmp` stores the query parameter inside the URL object.
   - Before appending the text `in 2021`, we need to check if the query string already contains it. Simple enough, this is achieved with a `if-else` loop.
-  - As a redundancy measure, I also make sure to sanitize the query string from partnership-token that look like `&t=`.
   - Once the condition is satisfied the redirection happens.
+> As a redundancy measure, I also make sure to sanitize the query string from partnership-token that look like `&t=`.
+
+
+#### Testing
+
+Testing for the extension is done with a tool by Mozilla called [web-ext](https://github.com/mozilla/web-ext). Among other things, it has a `lint` feature
+which reports errors in the extension manifest or other source code files.
 
 #### Problems faced (and resolved)
 
-1. **The ad count has to be updated dynamically** : To make sure the ads are highlighted  as soon as the page is loaded and the ad count is accurate, the function
-   needs to be called after every AJAX request. This problem was solved by the following approaches :
+1. **The ad count has to be updated dynamically** : To make sure the ads are highlighted as soon as the page is loaded and the ad count is accurate, the
+   function needs to be called after every AJAX request. This problem was solved by the following approaches :
 
    - Since the readystatechange event is fired whenever the readyState property of the XMLHttpRequest changes, we make sure the initial function load happens
      when this is `interactive`.
    - To make sure the function is dynamically called, the actual logic is enclosed within a function listening to fetch calls -->
-     `redirecter()`. -`redirecter()` uses a performance observer API to monitor `initiatorType` of AJAX requests. Only and only when a call is made to the duck
-     server is the main function loaded. This ensures better performance as opposed to setting a timer function or adding a click based listener.
+     `redirecter()`. 
+   - `redirecter()` uses a performance observer API to monitor `initiatorType` of AJAX requests. Only and only when a call is made to the duck
+     server is the main-logic function loaded. This ensures better performance as opposed to setting a timer function or adding a click based listener.
 
-2. **The pop-up needs the data from content_script**: Since the content script is essentially sand-boxed within the scope of the webpage, it is not easy to
+2. **The pop-up needs the data from content_script** : Since the content script is essentially sand-boxed within the scope of the webpage, it is not easy to
    communicate with other parts of the extension. Web browsers have an easy to use messaging API `onMessage` and `sendMessage`.
    - We initiate a message channel from our `popup` when it is opened.
    - The message goes to the content script which replies with ad count variable's value.
