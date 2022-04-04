@@ -1,16 +1,19 @@
 {
-  "name": "Ad Highlight",
+  "applications": {
+    "gecko": {
+      "id": "NeevaTest@example.org",
+      "strict_min_version": "65.0"
+    }
+  },"name": "Ad Highlight",
   "version": "0.1",
   "description": "Highlight Search-Engine Advertisements",
   "manifest_version": 2,
   "icons": {
     "128": "img/icon128.png",
     "512": "img/icon512.png"
-  },
+  }, 
   "background": {
-    "scripts": [
-      "background.js"
-    ]
+    "scripts": ["background.js"]
   },
   "browser_action": {
     "default_icon": "img/icon256.png",
@@ -20,9 +23,9 @@
   "content_scripts": [
     {
       "run_at": "document_start",
-      "matches": [
+       "matches": [
         "*://duckduckgo.com/*"
-      ],
+      ], 
       "js": [
         "assets/content.js"
       ],
@@ -37,6 +40,6 @@
     "webRequestBlocking",
     "tabs",
     "*://duckduckgo.com/*",
-    "*://*.duckduckgo.com/*"
+    "*://*.duckduckgo.com/*"   
   ]
 }
