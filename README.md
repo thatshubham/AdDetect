@@ -25,7 +25,7 @@ adverts on [duckduckgo](https://duckduckgo.com/) and highlights them.
 
 - Change the background of ads to the color red.
 - Append `"in 2021"` to the search queries.
-- DIsplay the number of ads of the open search tab in the extension popup.
+- Display the number of ads of the open search tab in the extension popup.
 
 ## Installation
 
